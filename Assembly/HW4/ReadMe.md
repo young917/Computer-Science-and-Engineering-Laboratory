@@ -6,11 +6,11 @@ Take the string as input from the uwer and Prints the reversed string as output.
 
 *CONDITION*
 
-*uppercase should be changed to lowercase.
+* uppercase should be changed to lowercase.
 
-*lowercase should be changed to uppercase.
+* lowercase should be changed to uppercase.
 
-*Make at least one user-defined procedure.
+* Make at least one user-defined procedure.
 
 
 *NOTE*

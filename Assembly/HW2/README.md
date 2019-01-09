@@ -1,4 +1,4 @@
-**####### Contents**
+**###### Contents**
 
 Make a file with name "hw2.inc". Declare the fllowing data in hw2.inc
 
@@ -12,7 +12,7 @@ Make a file with name "hw2.inc". Declare the fllowing data in hw2.inc
 `val4 SDWORD -200`
 
 
-**####### Objective**
+**###### Objective**
 
 Make a program to calculate
 
@@ -21,6 +21,6 @@ Make a program to calculate
 
 `eval2 = 14 * val1 + 13 * val2 = 15 * (val3 - val4)`
 
-**####### Restriction**
+**###### Restriction**
 
 The number of registers you can use in calculation is three.

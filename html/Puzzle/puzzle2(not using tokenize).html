@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+    <title>15 Puzzle Game</title>
+    <meta name="generator" content="Microsoft FrontPage 4.0">
+
+    <script language="JavaScript">
+
+var completed=true; // 퍼즐이 완성되었는지에 대한 여부
+
+// 문자열(str)을 구분자(sep)로 끊은 토큰들의 리스트를 생성
+// sep: 구분자(seprator)
+function tokenize(sep,str)
+{
+  tokens = new Array(); // 토큰 리스트
+  
+  i=0;
+  while(1)
+  {
+     idx=str.indexOf(sep); // 구분자가 있는 위치
+     if(idx == -1) // 구분자 없으면
+     {
+          if(str.length>0)
+          {
+              tokens[i]=str;
+          } 
+          break;
+     }
+     tokens[i++]=str.substring(0,idx); // 새로운 토큰 추가(처음부터 구분자 앞까지의 부분 문자열)
+     str=str.substr(idx+1); // 다음 토큰을 찾을 문자열(구분자 이후의 문자열)
+  }
+  return tokens;
+}
+
+// 퍼즐판에서의 x 좌표, 퍼즐 인덱스-> x좌표
+function getX(idx)
+{
+  var rest=idx-Math.floor(idx/4)*4; 
+  return (rest==0)?4:rest;
+}
+
+// 퍼즐판에서의 y 자표 , 퍼즐 인덱스-> y좌표
+function getY(idx)
+ {
+    return Math.floor((idx-1)/4)+1;
+ }
+
+// 퍼즐판에서의 좌표(x,y)가 몇 번째 칸인지를 계산(퍼즐 인덱스)
+function getIndex(x,y)
+ {
+   return x+(y-1)*4;
+ }
+
+// x(혹은 y) 좌표를 입력받아 이동할 수 있는 새로운 좌표를 구함
+function newDirection(pos)
+{
+  var dir;
+
+  if ((pos==2)||(pos==3)) dir=(Math.floor(Math.random()+0.5)==0)?-1:1;
+  else dir=(pos==1)?1:-1;
+  return (pos+dir);
+}
+
+// 퍼즐 조각이 새로 이동할 수 있는 칸을 계산
+function newIndex(idx)
+{
+  var x,y;
+
+  x=getX(idx);
+  y=getY(idx);
+  if (Math.floor(Math.random()+0.5)==0) x=newDirection(x);
+  else y=newDirection(y);
+  return getIndex(x,y);
+}
+
+// 퍼즐이 완성되었는지에 대한 여부
+function isComplete()
+{
+	post_name=0;
+	// 배열 document.images[]의 원소들(각 원소에 할당된 퍼즐 조각 그림들)이 오름차순으로 차례대로 정렬되어 있고
+	for(j=1;j<=16;j++){
+		source=document.images["i"+j].src; // 이미지에 부여된 이름으로 접근
+		block=new tokenize('/',source); // 상대경로로 표현되는 주소를 '/'로 나눈다
+		source=block[block.length-1]; // '/'로 나누어진 토큰들의 맨 끝 토큰에 "*.jpg"가 있다
+		block=new tokenize('.',source); // "*.jpg"를 '.'을 기준으로 나눈다
+		name=block[0]; // 나누어진 토큰의 앞부분에서 이미지 이름을 얻을 수 있다
+		if(Number(name) != (Number(post_name)+1)){ // 지금의 이미지 이름이 그 전 이미지보다 1 더 큰 게 아니면
+			return false;
+		}
+		post_name=name; //다음 단계를 위해 지금 이미지 이름을 전 이미지 이름으로 설정해놓는다
+	}
+	if(completed==false){
+		return true;
+	}
+	// completed가 false이면,
+	// 퍼즐이 완성된 것이다.
+}
+
+// 퍼즐을 섞음
+function shuffle()
+ {
+  var puzzles=new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
+
+  // iter: 퍼즐 조각을 섞는 횟수
+  iter=Math.floor(Math.random()*200+0.5)+100;
+  // puzzles 배열의 원소들을 섞는다.
+  // puzzles[] 배열의 임의로 선택된 퍼즐판상에서의 인접한 두 퍼즐조각을 서로 바꾼다.
+  tmp_idx1=16;
+  past=tmp_idx1;
+  for (i=1;i<iter;i++)
+  {
+	tmp=newIndex(tmp_idx1); //tmp는 tmp_idx1 인접한 퍼즐조각
+	if(past == tmp){ // 그 전 수행에서 이동하기 전 위치(past)와 같으면 다시 tmp를 설정한다.
+		i--;
+		continue;
+	}
+	tmp_idx2=tmp; // tmp_idx2는 빈칸이 이동할 칸
+	puzzles[tmp_idx1-1]=puzzles[tmp_idx2-1];
+	puzzles[tmp_idx2-1]=16;
+	past=tmp_idx1; // past를 빈칸이 움직이기 전 있었던 위치로 설정
+	tmp_idx1=tmp_idx2; // tmp_idx1은 현재 빈칸의 위치
+  }
+  // 섞인 퍼즐 조각들을 배열 document.images[]에 각각 할당
+  for(i=1;i<=16;i++){
+	 document.images["i"+i].src = puzzles[i-1]+".gif";
+  }
+  // 퍼즐을 섞으면 게임이 새로 시작되므로 completed 변수를 false로 초기화
+  completed=false;
+}
+
+// 퍼즐 조각을 이동
+function movePiece(idx)
+{
+  // 퍼즐판에서 idx 번째 칸에 있는 퍼즐조각에 대한 퍼즐 조각 번호를 얻어낸다.
+  source=document.images["i"+idx].src;
+  block=new tokenize('/',source);
+  source=block[block.length-1];
+  block=new tokenize('.',source);
+  name=block[0];
+  if(name == 16){
+	  return;
+  }
+  // 만약 그 번호가 16이면 blank를 의미하므로 더 이상의 작업이 필요없다.
+  // x: 선택된 퍼즐 조각의 퍼즐판상에서의 x 좌표
+  // y: 선택된 퍼즐 조각의 퍼즐판상에서의 y 좌표
+  // flag: 이동이 가능하면 1, 아니면 0
+  // midx: 이동가능한 칸의 번호
+  x=getX(idx);
+  y=getY(idx);
+  flag=0;
+  // 선택된 퍼즐 조각의 상하좌우 방향으로 바로 인접한 칸에 대하여
+  // 비어있는 칸을 찾는다(해당 칸의 퍼즐조각 번호가 16이면 비어있는 칸).
+  // 비어있는 칸이 존재하면
+  var new_x,new_y,midx,new_name;
+  dir=new Array(-1,1,0,0); 
+  for(j=0;j<4;j++){
+	  new_x=x+dir[j];
+	  new_y=y+dir[3-j]; // 좌우상하 순서로 살펴보게 된다
+	  if(new_x == 0 || new_x == 5 || new_y == 0 || new_y == 5){ //x좌표나 y좌표가 퍼즐판을 벗어났을 경우 무시한다
+		  continue;
+	  }
+	  midx=getIndex(new_x,new_y);
+	  tmp_src=document.images["i"+midx].src;
+	  tmp_block=new tokenize('/',tmp_src);
+	  tmp_src=tmp_block[tmp_block.length-1];
+	  tmp_block=new tokenize('.',tmp_src);
+	  new_name=tmp_block[0]; // 좌우상하 퍼즐 조각의 이름
+	  if(new_name == 16){ // 빈칸이면
+		  flag=1;
+		  break;
+	  }
+  }
+  // 선택된 칸의 퍼즐 조각을 그 칸으로 이동시킨다.
+  if(flag){
+	  document.images["i"+midx].src=name+".gif";
+	  document.images["i"+idx].src="16.gif";
+  }
+  // 퍼즐이 완성되었는지 확인하여
+  // 퍼즐이 완성된 상태면,
+  if(isComplete()){
+	  completed=true;
+	  alert("Congratulation!");
+  }
+  // "Congratulation!" 메시지를 경고창(alert box)으로 띄어주고 completed 변수를 true로 세팅한다.
+}
+    </script>
+
+</head>
+
+<body bgcolor="silver" text="black" link="#0000EE" vlink="#551A8B" alink="red">
+    <h2 align="center">
+        15 Puzzle</h2>
+    <div align="center">
+        <table border>
+            <tr>
+                <td width="50%" align="center">
+
+                    <script language="JavaScript">
+with(window.document)
+  {
+    open();
+    writeln('<table border=1 cellpadding=0 cellspacing=1>');
+    for(var i=1;i<17;i++)
+       {
+         if(i==1 || i==5 || i==9 || i==13 )
+           {
+             writeln('<tr>');
+           }
+         writeln('  <td width=49 height=49>');
+         writeln('      <a href=JavaScript:void(0); onclick=movePiece(',i,',)>');
+         writeln('       <img src=',i,'.gif border=0 width=49 height=49 name=i',i,'></a>');
+         writeln('  </td>');
+         if(i==4 || i==8 || i==12 || i==16 )
+           {
+              writeln('</tr>');
+           }
+        }
+      writeln('</table>');
+      close();
+    }
+                    </script>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <p align="center">
+        <br>
+    </p>
+    <form method="get">
+    <p align="center">
+        <input type="button" value="시작" onclick="shuffle()"></p> 
+    </form>
+</body>
+</html>

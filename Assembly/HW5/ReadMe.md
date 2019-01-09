@@ -16,6 +16,6 @@ sort all pairs based on X values and if two pairs' X values are same, then sort 
 
 For sorting, differentiate the order on odd index pairs and even index pairs: 
 
-odd index - sorted in ascending order for X values and in descending order for Y values in case of same X values between pairs.
+*odd index* - sorted in ascending order for X values and in descending order for Y values in case of same X values between pairs.
 
-even index - sorted in descending order for X values and in ascending order for Y values in case of same X values between pairs.
+*even index* - sorted in descending order for X values and in ascending order for Y values in case of same X values between pairs.

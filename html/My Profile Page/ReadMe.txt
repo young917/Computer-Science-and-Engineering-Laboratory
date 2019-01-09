@@ -5,3 +5,4 @@
 #Requirement
 	
 	Need "welcome.jpg".
+	Need "IMG_5902.jpg"

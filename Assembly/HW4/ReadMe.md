@@ -1,6 +1,8 @@
 **TASK 1**
 
+
 Take the string as input from the uwer and Prints the reversed string as output.
+
 
 *CONDITION*
 
@@ -10,6 +12,7 @@ Take the string as input from the uwer and Prints the reversed string as output.
 
 *Make at least one user-defined procedure.
 
+
 *NOTE*
 
 1. The length of string does not exceed  40 characters.
@@ -18,13 +21,16 @@ Take the string as input from the uwer and Prints the reversed string as output.
 
 1. Input 'Enter' character to finish the program.
 
+
 ---
 
 **TASK 2**
 
+
 Take a plain text and a key as input.
 
 Use the key to encrypt and decrypt the plain text by XORing each character of the key against a corresponding byte in the message.
+
 
 *NOTE*
 

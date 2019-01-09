@@ -1,0 +1,18 @@
+if [ $# != 0 ]
+then
+	flag=0
+	for arg in $*
+	do
+		if [ $flag -eq 0 ]
+		then
+			grep -E $arg data > tmp
+			flag=1
+		else
+			grep -E $arg tmp > tmp2
+			cat tmp2 > tmp
+		fi
+	done
+	awk -f display.awk tmp
+else
+	echo "Enter what you want"
+fi
